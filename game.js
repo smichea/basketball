@@ -24,7 +24,7 @@ let bestScore = localStorage.getItem('bestScore') || 0;
 document.getElementById('bestScore').textContent = bestScore;
 
 // Constants
-const gravity = 0.5;
+const gravity = 0.2;
 const airResistance = 0.99;
 const maxInitialVelocity = 20;
 
