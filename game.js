@@ -17,6 +17,7 @@ resizeCanvas();
 let ball, backboard, rim, supportBeam;
 let isDragging = false;
 let dragStart = {};
+let ballThrown = false; // Ball is only thrown when released
 let currentScore = 0;
 let bestScore = localStorage.getItem('bestScore') || 0;
 
@@ -29,10 +30,10 @@ const maxInitialVelocity = 20;
 
 // Initialize Game Objects
 function init() {
-  ball = new Ball(cw / 2, ch - 50, 20);
-  backboard = new Backboard(cw / 2, 50, cw * 0.4, 10);
-  rim = new Rim(cw / 2, backboard.y + backboard.height + 10, backboard.width * 0.3, 10);
-  supportBeam = new SupportBeam(rim.x, rim.y + rim.height, 10, 100);
+    ball = new Ball(cw / 2, ch / 2, 30); // Increased radius to 30, positioned 100px from the bottom
+    backboard = new Backboard(cw / 2, 50, cw * 0.4, 10);
+    rim = new Rim(cw / 2, backboard.y + backboard.height + 10, backboard.width * 0.3, 10);
+    supportBeam = new SupportBeam(rim.x, rim.y + rim.height, 10, 100);
 }
 
 class Ball {
@@ -47,7 +48,8 @@ class Ball {
   }
 
   update() {
-    if (!isDragging) {
+    // Ball only moves if it has been thrown
+    if (!isDragging && ballThrown) {
       this.vy += gravity;
       this.vy *= airResistance;
       this.vx *= airResistance;
@@ -196,9 +198,10 @@ function isColliding(ball, rect) {
 
 function resetBall() {
   ball.x = cw / 2;
-  ball.y = ch - 50;
+  ball.y = ch /2;
   ball.vx = 0;
   ball.vy = 0;
+  ballThrown = false; // Ball is stationary again
 }
 
 function resetGame() {
@@ -252,6 +255,7 @@ function endDrag(e) {
     ball.vx = Math.max(-maxInitialVelocity, Math.min(maxInitialVelocity, dx / 10));
     ball.vy = Math.max(-maxInitialVelocity, Math.min(maxInitialVelocity, dy / 10));
     isDragging = false;
+    ballThrown = true; // The ball has been thrown
   }
 }
 
